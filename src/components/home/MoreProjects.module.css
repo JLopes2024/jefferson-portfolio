@@ -1,0 +1,484 @@
+.section {
+  padding:
+    160px var(--page-padding)
+    180px;
+
+  background:
+    var(--color-surface);
+}
+
+.container {
+  width: 100%;
+  max-width:
+    var(--page-max-width);
+
+  margin: 0 auto;
+}
+
+.heading {
+  margin-bottom: 90px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 42px;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
+}
+
+.label span:first-child {
+  color: var(--color-accent);
+}
+
+.line {
+  width: 50px;
+  height: 1px;
+
+  background:
+    var(--color-border-strong);
+}
+
+.headingContent {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.3fr)
+    minmax(280px, 0.5fr);
+
+  gap: 80px;
+
+  align-items: end;
+}
+
+.heading h2 {
+  font-size: clamp(
+    3.2rem,
+    7vw,
+    7rem
+  );
+
+  font-weight: 650;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+
+  text-transform: uppercase;
+}
+
+.heading h2 span {
+  display: block;
+
+  color: var(--color-accent);
+}
+
+.headingContent > p {
+  max-width: 420px;
+
+  color:
+    var(--color-text-secondary);
+
+  line-height: 1.65;
+}
+
+/* Grid */
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
+}
+
+/* Card */
+
+.card {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 20px;
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    var(--color-background);
+
+  cursor: pointer;
+
+  transition:
+    border-color
+      var(--transition-default),
+    transform
+      var(--transition-default);
+}
+
+.card:nth-child(1),
+.card:nth-child(4) {
+  grid-column: span 2;
+}
+
+/*
+  Link transparente em
+  toda a área do card.
+*/
+.cardLink {
+  position: absolute;
+  z-index: 10;
+
+  inset: 0;
+
+  border-radius: inherit;
+}
+
+.card:has(
+    .cardLink:focus-visible
+  ) {
+  outline:
+    2px solid
+    var(--color-accent);
+
+  outline-offset: 4px;
+}
+
+/* Top */
+
+.cardTop {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size: 0.72rem;
+
+  pointer-events: none;
+}
+
+.arrow {
+  display: grid;
+
+  width: 40px;
+  height: 40px;
+
+  place-items: center;
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius: 50%;
+
+  transition:
+    background
+      var(--transition-default),
+    border-color
+      var(--transition-default),
+    color
+      var(--transition-default),
+    transform
+      var(--transition-default);
+}
+
+/* Visual */
+
+.visual {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+
+  min-height: 270px;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  margin-top: 18px;
+
+  border-radius: 12px;
+
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      rgba(
+        183,
+        255,
+        60,
+        0.1
+      ),
+      transparent 38%
+    ),
+    var(--color-surface);
+
+  pointer-events: none;
+}
+
+.visual::before {
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(
+        255,
+        255,
+        255,
+        0.025
+      ) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(
+        255,
+        255,
+        255,
+        0.025
+      ) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    38px 38px;
+
+  content: "";
+}
+
+.visual span {
+  position: relative;
+  z-index: 1;
+
+  max-width: 80%;
+
+  color:
+    rgba(
+      244,
+      245,
+      246,
+      0.18
+    );
+
+  font-family:
+    var(--font-space-grotesk),
+    sans-serif;
+
+  font-size: clamp(
+    2rem,
+    4vw,
+    4rem
+  );
+
+  font-weight: 600;
+  letter-spacing: -0.06em;
+
+  text-align: center;
+
+  transition:
+    color
+      var(--transition-default),
+    transform
+      var(--transition-default);
+}
+
+/* Content */
+
+.cardContent {
+  position: relative;
+  z-index: 1;
+
+  padding-top: 24px;
+
+  pointer-events: none;
+}
+
+.type {
+  color: var(--color-accent);
+
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+}
+
+.cardContent h3 {
+  margin-top: 10px;
+
+  font-size: clamp(
+    2rem,
+    3.5vw,
+    3.7rem
+  );
+
+  font-weight: 600;
+  letter-spacing: -0.055em;
+}
+
+.cardContent > p {
+  max-width: 570px;
+
+  margin-top: 14px;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin-top: 22px;
+}
+
+.tags span {
+  padding:
+    6px 10px;
+
+  border:
+    1px solid
+    var(--color-border);
+
+  border-radius: 999px;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size: 0.68rem;
+}
+
+/* Hover */
+
+@media (hover: hover) {
+  .card:hover {
+    border-color:
+      rgba(
+        183,
+        255,
+        60,
+        0.45
+      );
+
+    transform:
+      translateY(-6px);
+  }
+
+  .card:hover
+    .visual span {
+    color:
+      rgba(
+        183,
+        255,
+        60,
+        0.72
+      );
+
+    transform: scale(1.03);
+  }
+
+  .card:hover .arrow {
+    border-color:
+      var(--color-accent);
+
+    background:
+      var(--color-accent);
+
+    color:
+      var(--color-background);
+
+    transform: rotate(45deg);
+  }
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .headingContent {
+    grid-template-columns: 1fr;
+
+    gap: 30px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .section {
+    padding:
+      110px
+      var(--page-padding)
+      120px;
+  }
+
+  .heading {
+    margin-bottom: 60px;
+  }
+
+  .heading h2 {
+    font-size: clamp(
+      2.8rem,
+      14vw,
+      4.5rem
+    );
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card:nth-child(1),
+  .card:nth-child(4) {
+    grid-column: auto;
+  }
+
+  .visual {
+    min-height: 220px;
+  }
+}
+
+/* Reduced motion */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+  .card,
+  .arrow,
+  .visual span {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:hover .arrow,
+  .card:hover
+    .visual span {
+    transform: none;
+  }
+}

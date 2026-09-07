@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Formulários</title>
+  </head>
+
+  <body>
+    <form
+      name="portfolio-contact"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+    >
+      <input
+        type="hidden"
+        name="form-name"
+        value="portfolio-contact"
+      />
+
+      <input
+        type="text"
+        name="bot-field"
+      />
+
+      <input
+        type="text"
+        name="name"
+      />
+
+      <input
+        type="email"
+        name="email"
+      />
+
+      <input
+        type="tel"
+        name="phone"
+      />
+
+      <select name="projectType">
+        <option value="site">
+          Site / Landing Page
+        </option>
+
+        <option value="system">
+          Sistema / Aplicativo
+        </option>
+
+        <option value="automation">
+          Automação
+        </option>
+
+        <option value="education">
+          Projeto educacional
+        </option>
+
+        <option value="other">
+          Outro
+        </option>
+      </select>
+
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>
