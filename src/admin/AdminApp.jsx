@@ -1,34 +1,54 @@
 import { useEffect, useState } from 'react'
 
-import { supabase } from '../lib/supabase'
+import {
+  supabase,
+  hasSupabaseConfig,
+} from '../lib/supabase'
 
 import Login from './Login'
 import Dashboard from './Dashboard'
 import ProjectForm from './ProjectForm'
 
 export default function AdminApp() {
-  const [session, setSession] = useState(null)
+  const [session, setSession] =
+    useState(null)
 
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] =
+    useState(false)
 
-  const [checking, setChecking] = useState(true)
+  const [checking, setChecking] =
+    useState(true)
 
-  const [screen, setScreen] = useState('dashboard')
+  const [screen, setScreen] =
+    useState('dashboard')
 
-  const [editingProject, setEditingProject] = useState(null)
+  const [
+    editingProject,
+    setEditingProject,
+  ] = useState(null)
 
   /*
-    Recupera a sessão existente e acompanha
-    login/logout do Supabase.
+    ==============================
+    RECUPERA SESSÃO
+    ==============================
   */
   useEffect(() => {
+    if (
+      !hasSupabaseConfig ||
+      !supabase
+    ) {
+      setChecking(false)
+      return
+    }
+
     let mounted = true
 
     async function loadSession() {
       const {
         data: { session },
         error,
-      } = await supabase.auth.getSession()
+      } =
+        await supabase.auth.getSession()
 
       if (!mounted) {
         return
@@ -53,28 +73,42 @@ export default function AdminApp() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(
-      (_event, currentSession) => {
-        if (!mounted) {
-          return
-        }
+    } =
+      supabase.auth.onAuthStateChange(
+        (_event, currentSession) => {
+          if (!mounted) {
+            return
+          }
 
-        setSession(currentSession)
-      },
-    )
+          setSession(
+            currentSession,
+          )
+        },
+      )
 
     return () => {
       mounted = false
+
       subscription.unsubscribe()
     }
   }, [])
 
   /*
-    Sempre que a sessão mudar,
-    verificamos se o usuário está
-    cadastrado em admin_users.
+    ==============================
+    VERIFICA SE É ADMIN
+    ==============================
   */
   useEffect(() => {
+    if (
+      !hasSupabaseConfig ||
+      !supabase
+    ) {
+      setIsAdmin(false)
+      setChecking(false)
+
+      return
+    }
+
     let mounted = true
 
     async function checkAdmin() {
@@ -92,14 +126,15 @@ export default function AdminApp() {
       const {
         data,
         error,
-      } = await supabase
-        .from('admin_users')
-        .select('user_id')
-        .eq(
-          'user_id',
-          session.user.id,
-        )
-        .maybeSingle()
+      } =
+        await supabase
+          .from('admin_users')
+          .select('user_id')
+          .eq(
+            'user_id',
+            session.user.id,
+          )
+          .maybeSingle()
 
       if (!mounted) {
         return
@@ -138,18 +173,30 @@ export default function AdminApp() {
   }, [session])
 
   /*
+    ==============================
     LOGIN
+    ==============================
   */
-  function handleLogin(currentSession) {
+  function handleLogin(
+    currentSession,
+  ) {
     setChecking(true)
 
-    setSession(currentSession)
+    setSession(
+      currentSession,
+    )
   }
 
   /*
+    ==============================
     LOGOUT
+    ==============================
   */
   async function handleLogout() {
+    if (!supabase) {
+      return
+    }
+
     const { error } =
       await supabase.auth.signOut()
 
@@ -163,6 +210,7 @@ export default function AdminApp() {
     }
 
     setSession(null)
+
     setIsAdmin(false)
 
     setEditingProject(null)
@@ -171,7 +219,9 @@ export default function AdminApp() {
   }
 
   /*
+    ==============================
     NOVO PROJETO
+    ==============================
   */
   function handleNewProject() {
     setEditingProject(null)
@@ -180,16 +230,22 @@ export default function AdminApp() {
   }
 
   /*
+    ==============================
     EDITAR PROJETO
+    ==============================
   */
-  function handleEditProject(project) {
+  function handleEditProject(
+    project,
+  ) {
     setEditingProject(project)
 
     setScreen('form')
   }
 
   /*
-    VOLTAR DO FORMULÁRIO
+    ==============================
+    CANCELAR FORMULÁRIO
+    ==============================
   */
   function handleCancelForm() {
     setEditingProject(null)
@@ -198,7 +254,9 @@ export default function AdminApp() {
   }
 
   /*
-    DEPOIS DE SALVAR
+    ==============================
+    PROJETO SALVO
+    ==============================
   */
   function handleProjectSaved() {
     setEditingProject(null)
@@ -207,7 +265,43 @@ export default function AdminApp() {
   }
 
   /*
-    CARREGAMENTO DA AUTENTICAÇÃO
+    ==============================
+    SUPABASE NÃO CONFIGURADO
+    ==============================
+  */
+  if (
+    !hasSupabaseConfig ||
+    !supabase
+  ) {
+    return (
+      <main className="admin-loading">
+        <div
+          style={{
+            textAlign: 'center',
+            maxWidth: '500px',
+            padding: '24px',
+          }}
+        >
+          <strong>
+            Supabase não configurado.
+          </strong>
+
+          <p>
+            Verifique as variáveis
+            VITE_SUPABASE_URL e
+            VITE_SUPABASE_ANON_KEY
+            ou
+            VITE_SUPABASE_PUBLISHABLE_KEY.
+          </p>
+        </div>
+      </main>
+    )
+  }
+
+  /*
+    ==============================
+    CARREGANDO
+    ==============================
   */
   if (checking) {
     return (
@@ -218,9 +312,14 @@ export default function AdminApp() {
   }
 
   /*
-    NÃO AUTENTICADO
+    ==============================
+    LOGIN
+    ==============================
   */
-  if (!session || !isAdmin) {
+  if (
+    !session ||
+    !isAdmin
+  ) {
     return (
       <Login
         onLogin={handleLogin}
@@ -229,26 +328,42 @@ export default function AdminApp() {
   }
 
   /*
+    ==============================
     FORMULÁRIO
+    ==============================
   */
   if (screen === 'form') {
     return (
       <ProjectForm
-        project={editingProject}
-        onCancel={handleCancelForm}
-        onSaved={handleProjectSaved}
+        project={
+          editingProject
+        }
+        onCancel={
+          handleCancelForm
+        }
+        onSaved={
+          handleProjectSaved
+        }
       />
     )
   }
 
   /*
+    ==============================
     DASHBOARD
+    ==============================
   */
   return (
     <Dashboard
-      onLogout={handleLogout}
-      onNewProject={handleNewProject}
-      onEditProject={handleEditProject}
+      onLogout={
+        handleLogout
+      }
+      onNewProject={
+        handleNewProject
+      }
+      onEditProject={
+        handleEditProject
+      }
     />
   )
 }

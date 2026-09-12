@@ -7,11 +7,10 @@ const supabaseKey =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const hasSupabaseConfig =
-  Boolean(
-    supabaseUrl &&
-    supabaseKey
-  )
+export const hasSupabaseConfig = Boolean(
+  supabaseUrl &&
+  supabaseKey,
+)
 
 if (!hasSupabaseConfig) {
   console.error(
@@ -24,5 +23,12 @@ export const supabase =
     ? createClient(
         supabaseUrl,
         supabaseKey,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+          },
+        },
       )
     : null
