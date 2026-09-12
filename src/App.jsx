@@ -7,10 +7,20 @@ import CodeLab from './components/CodeLab'
 import ContactCTA from './components/ContactCTA'
 import Footer from './components/Footer'
 
+import AdminApp from './admin/AdminApp'
+
 export default function App() {
+  const isAdmin =
+    window.location.pathname.startsWith('/admin')
+
+  if (isAdmin) {
+    return <AdminApp />
+  }
+
   return (
     <>
       <Header />
+
       <main>
         <Hero />
         <Stack />
@@ -19,6 +29,7 @@ export default function App() {
         <CodeLab />
         <ContactCTA />
       </main>
+
       <Footer />
     </>
   )

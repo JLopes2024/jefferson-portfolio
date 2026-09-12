@@ -1884,3 +1884,477 @@ img {
       column;
   }
 }
+/* ========================================
+   ADMIN
+======================================== */
+
+.admin-loading,
+.admin-login,
+.admin-dashboard {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.admin-loading {
+  display: grid;
+  place-items: center;
+
+  color: var(--muted);
+}
+
+.admin-header {
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding-inline:
+    max(
+      24px,
+      calc(
+        (100vw - var(--content)) / 2
+      )
+    );
+
+  border-bottom:
+    1px solid var(--line);
+
+  background:
+    rgba(11, 15, 12, 0.94);
+}
+
+.admin-header strong {
+  font-size: 1rem;
+
+  font-weight: 900;
+
+  letter-spacing:
+    -0.04em;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.admin-header a,
+.admin-header button {
+  color: var(--muted);
+
+  background: none;
+
+  cursor: pointer;
+
+  border: 0;
+}
+
+.admin-header a:hover,
+.admin-header button:hover {
+  color: var(--text);
+}
+
+.admin-dashboard-content {
+  width:
+    min(
+      var(--content),
+      calc(100% - 48px)
+    );
+
+  margin-inline: auto;
+
+  padding-block: 70px 120px;
+}
+
+.admin-page-heading {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-end;
+
+  gap: 40px;
+
+  padding-bottom: 44px;
+}
+
+.admin-page-heading h1,
+.admin-dashboard-content > h1 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      3.5rem,
+      7vw,
+      6rem
+    );
+
+  line-height: 0.95;
+
+  letter-spacing:
+    -0.06em;
+}
+
+.admin-page-heading p:not(.eyebrow) {
+  max-width: 580px;
+
+  margin:
+    20px 0 0;
+
+  color:
+    var(--muted);
+
+  line-height:
+    1.6;
+}
+
+.admin-project-list {
+  border-top:
+    1px solid var(--line);
+}
+
+.admin-project-card {
+  display: grid;
+
+  grid-template-columns:
+    180px
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 28px;
+
+  padding:
+    24px 0;
+
+  border-bottom:
+    1px solid var(--line);
+}
+
+.admin-project-preview {
+  display: grid;
+
+  place-items: center;
+
+  overflow: hidden;
+
+  width: 180px;
+  aspect-ratio: 16 / 9;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 12px;
+
+  background:
+    var(--surface);
+}
+
+.admin-project-preview img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.admin-project-preview span {
+  color:
+    var(--accent);
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  font-weight: 900;
+}
+
+.admin-project-info {
+  min-width: 0;
+}
+
+.admin-project-meta {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 14px;
+
+  margin-bottom: 8px;
+
+  color:
+    var(--accent);
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  font-size: 0.7rem;
+
+  letter-spacing:
+    0.08em;
+}
+
+.admin-project-info h2 {
+  margin: 0;
+
+  font-size:
+    1.55rem;
+
+  letter-spacing:
+    -0.04em;
+}
+
+.admin-project-info p {
+  max-width: 680px;
+
+  margin:
+    10px 0 0;
+
+  color:
+    var(--muted);
+
+  font-size:
+    0.9rem;
+
+  line-height:
+    1.5;
+}
+
+.admin-project-techs {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: 14px;
+}
+
+.admin-project-techs span {
+  padding:
+    5px 8px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 999px;
+
+  color:
+    #b9c0ba;
+
+  font-size:
+    0.68rem;
+}
+
+.admin-project-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.admin-project-actions a,
+.admin-project-actions button {
+  padding:
+    10px 14px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 999px;
+
+  background:
+    transparent;
+
+  color:
+    var(--text);
+
+  cursor:
+    pointer;
+}
+
+.admin-project-actions a:hover,
+.admin-project-actions button:hover {
+  border-color:
+    var(--accent);
+}
+
+.admin-delete-button:hover {
+  color:
+    #ff8d8d !important;
+
+  border-color:
+    #753d3d !important;
+}
+
+.admin-delete-button:disabled {
+  opacity: 0.5;
+
+  cursor: wait;
+}
+
+.admin-alert {
+  margin-bottom: 24px;
+
+  padding:
+    14px 18px;
+
+  border-radius: 12px;
+}
+
+.admin-alert--error {
+  color:
+    #ffb4b4;
+
+  background:
+    rgba(
+      255,
+      80,
+      80,
+      0.08
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      80,
+      80,
+      0.25
+    );
+}
+
+.admin-empty,
+.admin-loading-box {
+  padding:
+    60px 20px;
+
+  text-align: center;
+
+  color:
+    var(--muted);
+
+  border-top:
+    1px solid var(--line);
+
+  border-bottom:
+    1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+
+  .admin-project-card {
+    grid-template-columns:
+      130px
+      1fr;
+  }
+
+  .admin-project-preview {
+    width: 130px;
+  }
+
+  .admin-project-actions {
+    grid-column:
+      1 / -1;
+
+    justify-content:
+      flex-end;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .admin-dashboard-content {
+    width:
+      calc(100% - 30px);
+
+    padding-block:
+      50px 80px;
+  }
+
+  .admin-page-heading {
+    align-items:
+      stretch;
+
+    flex-direction:
+      column;
+  }
+
+  .admin-page-heading .button {
+    width: 100%;
+  }
+
+  .admin-project-card {
+    grid-template-columns:
+      1fr;
+  }
+
+  .admin-project-preview {
+    width: 100%;
+  }
+
+  .admin-project-actions {
+    grid-column:
+      auto;
+
+    justify-content:
+      flex-start;
+
+    flex-wrap:
+      wrap;
+  }
+
+  .admin-header-actions a {
+    display: none;
+  }
+}
+/* ========================================
+   ADMIN ORDER
+======================================== */
+
+.admin-order-buttons {
+  display: flex;
+  gap: 5px;
+
+  padding-right: 8px;
+
+  border-right:
+    1px solid var(--line);
+}
+
+.admin-order-buttons button {
+  display: grid;
+  place-items: center;
+
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+
+  border-radius: 50%;
+}
+
+.admin-order-buttons button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.admin-order-buttons button:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .admin-order-buttons {
+    width: 100%;
+
+    padding-right: 0;
+    padding-bottom: 10px;
+
+    border-right: 0;
+    border-bottom:
+      1px solid var(--line);
+  }
+}

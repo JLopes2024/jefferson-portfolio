@@ -18,12 +18,12 @@ export default function Projects() {
 
     async function loadProjects() {
       setStatus('loading')
-
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .order('featured', { ascending: false })
-        .order('created_at', { ascending: false })
+const { data, error } = await supabase
+  .from('projects')
+  .select('*')
+  .order('display_order', {
+    ascending: true,
+  })
 
       if (error) {
         console.error('Erro ao carregar projetos:', error.message)
