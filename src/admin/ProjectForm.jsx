@@ -2,6 +2,51 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 const BUCKET = 'project-images'
+const TECHNOLOGY_OPTIONS = [
+  'React',
+  'JavaScript',
+  'TypeScript',
+  'Node.js',
+
+  'HTML',
+  'CSS',
+  'Bootstrap',
+
+  'Supabase',
+  'PostgreSQL',
+  'MySQL',
+  'SQL Server',
+
+  'REST API',
+  'JSON',
+
+  'Python',
+  'Flask',
+
+  'Vite',
+  'Git',
+  'GitHub',
+
+  'Vercel',
+]
+
+const CATEGORY_OPTIONS = [
+  'Landing Pages',
+  'Apps Educacionais',
+  'Sistemas Web',
+  'Sites Institucionais',
+  'Ferramentas Digitais',
+  'APIs e Back-end',
+]
+
+const LABEL_OPTIONS = [
+  'LANDING PAGE',
+  'APP EDUCACIONAL',
+  'SISTEMA WEB',
+  'SITE INSTITUCIONAL',
+  'FERRAMENTA DIGITAL',
+  'API / BACK-END',
+]
 
 function createSlug(value) {
   return value
@@ -233,6 +278,28 @@ export default function ProjectForm({
       .remove([path])
   }
 
+  function toggleTechnology(technology) {
+  const currentTechnologies =
+    normalizeTechnologies(form.technologies)
+
+  const alreadySelected =
+    currentTechnologies.includes(technology)
+
+  const nextTechnologies = alreadySelected
+    ? currentTechnologies.filter(
+        (item) => item !== technology,
+      )
+    : [
+        ...currentTechnologies,
+        technology,
+      ]
+
+  updateField(
+    'technologies',
+    nextTechnologies.join(', '),
+  )
+}
+
   async function handleSubmit(event) {
     event.preventDefault()
 
@@ -391,319 +458,450 @@ export default function ProjectForm({
   }
 
   return (
-    <main className="admin-dashboard">
-
-      <header className="admin-header">
-
-        <strong>
+  <main
+    className="min-vh-100 bg-dark text-light"
+    data-bs-theme="dark"
+  >
+    <nav className="navbar bg-black border-bottom border-secondary">
+      <div className="container py-2">
+        <span className="navbar-brand text-light fw-bold mb-0">
           JL.ADMIN
-        </strong>
+        </span>
 
         <button
           type="button"
+          className="btn btn-outline-secondary"
           onClick={onCancel}
         >
           ← Voltar
         </button>
+      </div>
+    </nav>
 
-      </header>
+    <div className="container py-5">
 
-      <section className="admin-dashboard-content">
+      <div className="mb-5">
+        <span className="badge text-bg-success mb-3">
+          {editing ? 'EDITAR PROJETO' : 'NOVO PROJETO'}
+        </span>
 
-        <div className="admin-form-heading">
+        <h1 className="display-4 fw-bold mb-0">
+          {editing ? project.title : 'Novo projeto'}
+        </h1>
+      </div>
 
-          <div>
-            <p className="eyebrow">
-              {editing
-                ? 'EDITAR PROJETO'
-                : 'NOVO PROJETO'}
-            </p>
+      <form
+        className="row g-4"
+        onSubmit={handleSubmit}
+      >
 
-            <h1>
-              {editing
-                ? project.title
-                : 'Novo projeto'}
-            </h1>
+        {/* TÍTULO */}
+        <div className="col-12 col-md-6">
+          <label
+            htmlFor="title"
+            className="form-label"
+          >
+            Título *
+          </label>
+
+          <input
+            id="title"
+            type="text"
+            className="form-control form-control-lg"
+            value={form.title}
+            onChange={(event) =>
+              handleTitleChange(event.target.value)
+            }
+            required
+          />
+        </div>
+
+        {/* SLUG */}
+        <div className="col-12 col-md-6">
+          <label
+            htmlFor="slug"
+            className="form-label"
+          >
+            Slug *
+          </label>
+
+          <input
+            id="slug"
+            type="text"
+            className="form-control form-control-lg"
+            value={form.slug}
+            onChange={(event) =>
+              handleSlugChange(event.target.value)
+            }
+            placeholder="meu-projeto"
+            required
+          />
+        </div>
+
+      {/* CATEGORIA */}
+<div className="col-12 col-md-6">
+  <label
+    htmlFor="category"
+    className="form-label"
+  >
+    Categoria *
+  </label>
+
+  <select
+    id="category"
+    className="form-select"
+    value={form.category}
+    onChange={(event) =>
+      updateField(
+        'category',
+        event.target.value,
+      )
+    }
+    required
+  >
+    <option value="">
+      Selecione uma categoria
+    </option>
+
+    {CATEGORY_OPTIONS.map((category) => (
+      <option
+        key={category}
+        value={category}
+      >
+        {category}
+      </option>
+    ))}
+  </select>
+</div>
+
+{/* LABEL */}
+<div className="col-12 col-md-6">
+  <label
+    htmlFor="label"
+    className="form-label"
+  >
+    Label
+  </label>
+
+  <select
+    id="label"
+    className="form-select"
+    value={form.label}
+    onChange={(event) =>
+      updateField(
+        'label',
+        event.target.value,
+      )
+    }
+  >
+    <option value="">
+      Selecione uma label
+    </option>
+
+    {LABEL_OPTIONS.map((label) => (
+      <option
+        key={label}
+        value={label}
+      >
+        {label}
+      </option>
+    ))}
+  </select>
+</div>
+
+       
+        {/* DESCRIÇÃO */}
+        <div className="col-12">
+          <label
+            htmlFor="description"
+            className="form-label"
+          >
+            Descrição *
+          </label>
+
+          <textarea
+            id="description"
+            className="form-control"
+            rows="5"
+            value={form.description}
+            onChange={(event) =>
+              updateField(
+                'description',
+                event.target.value,
+              )
+            }
+            required
+          />
+        </div>
+{/* TECNOLOGIAS */}
+<div className="col-12">
+
+  <label className="form-label mb-3">
+    Tecnologias
+  </label>
+
+  <div className="card bg-black border-secondary">
+
+    <div className="card-body">
+
+      <div className="row g-3">
+
+        {TECHNOLOGY_OPTIONS.map(
+          (technology) => {
+
+            const checked =
+              technologiesPreview.includes(
+                technology,
+              )
+
+            const id =
+              `technology-${technology
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')}`
+
+            return (
+              <div
+                key={technology}
+                className="col-6 col-md-4 col-lg-3"
+              >
+                <div className="form-check">
+
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={id}
+                    checked={checked}
+                    onChange={() =>
+                      toggleTechnology(
+                        technology,
+                      )
+                    }
+                  />
+
+                  <label
+                    className="form-check-label"
+                    htmlFor={id}
+                  >
+                    {technology}
+                  </label>
+
+                </div>
+              </div>
+            )
+          },
+        )}
+
+      </div>
+
+    </div>
+  </div>
+
+  {technologiesPreview.length > 0 && (
+    <div className="d-flex flex-wrap gap-2 mt-3">
+
+      {technologiesPreview.map(
+        (technology) => (
+          <span
+            key={technology}
+            className="badge text-bg-success"
+          >
+            {technology}
+          </span>
+        ),
+      )}
+
+    </div>
+  )}
+
+</div>
+
+        {/* GITHUB */}
+        <div className="col-12 col-md-6">
+          <label
+            htmlFor="github"
+            className="form-label"
+          >
+            GitHub
+          </label>
+
+          <input
+            id="github"
+            type="url"
+            className="form-control"
+            value={form.github_url}
+            onChange={(event) =>
+              updateField(
+                'github_url',
+                event.target.value,
+              )
+            }
+            placeholder="https://github.com/..."
+          />
+        </div>
+
+        {/* DEMO */}
+        <div className="col-12 col-md-6">
+          <label
+            htmlFor="demo"
+            className="form-label"
+          >
+            Projeto publicado
+          </label>
+
+          <input
+            id="demo"
+            type="url"
+            className="form-control"
+            value={form.demo_url}
+            onChange={(event) =>
+              updateField(
+                'demo_url',
+                event.target.value,
+              )
+            }
+            placeholder="https://..."
+          />
+        </div>
+
+        {/* ORDEM */}
+        <div className="col-12 col-md-4">
+          <label
+            htmlFor="order"
+            className="form-label"
+          >
+            Ordem
+          </label>
+
+          <input
+            id="order"
+            type="number"
+            min="1"
+            className="form-control"
+            value={form.display_order}
+            onChange={(event) =>
+              updateField(
+                'display_order',
+                event.target.value,
+              )
+            }
+          />
+        </div>
+
+        {/* DESTAQUE */}
+        <div className="col-12 col-md-8 d-flex align-items-end">
+          <div className="form-check form-switch mb-2">
+
+            <input
+              id="featured"
+              type="checkbox"
+              className="form-check-input"
+              role="switch"
+              checked={form.featured}
+              onChange={(event) =>
+                updateField(
+                  'featured',
+                  event.target.checked,
+                )
+              }
+            />
+
+            <label
+              htmlFor="featured"
+              className="form-check-label"
+            >
+              Projeto em destaque
+            </label>
+
+          </div>
+        </div>
+
+        {/* IMAGEM */}
+        <div className="col-12">
+
+          <div className="card bg-black border-secondary">
+            <div className="card-body p-4">
+
+              <div className="row g-4 align-items-center">
+
+                <div className="col-12 col-md">
+
+                  <label
+                    htmlFor="image"
+                    className="form-label"
+                  >
+                    Imagem do projeto
+                  </label>
+
+                  <input
+                    id="image"
+                    type="file"
+                    className="form-control"
+                    accept="image/webp,image/png,image/jpeg"
+                    onChange={handleImageChange}
+                  />
+
+                  <div className="form-text">
+                    WebP, PNG ou JPEG. Máximo de 5 MB.
+                  </div>
+
+                </div>
+
+                {previewUrl && (
+                  <div className="col-12 col-md-5">
+
+                    <img
+                      src={previewUrl}
+                      alt="Preview do projeto"
+                      className="img-fluid rounded border border-secondary"
+                    />
+
+                  </div>
+                )}
+
+              </div>
+            </div>
           </div>
 
         </div>
 
-        <form
-          className="admin-project-form"
-          onSubmit={handleSubmit}
-        >
+        {/* ERRO */}
+        {error && (
+          <div className="col-12">
 
-          <div className="admin-form-grid">
-
-            <label>
-              <span>
-                Título *
-              </span>
-
-              <input
-                type="text"
-                value={form.title}
-                onChange={(event) =>
-                  handleTitleChange(
-                    event.target.value,
-                  )
-                }
-                required
-              />
-            </label>
-
-            <label>
-              <span>
-                Slug *
-              </span>
-
-              <input
-                type="text"
-                value={form.slug}
-                onChange={(event) =>
-                  handleSlugChange(
-                    event.target.value,
-                  )
-                }
-                placeholder="meu-projeto"
-                required
-              />
-            </label>
-
-            <label>
-              <span>
-                Categoria *
-              </span>
-
-              <input
-                type="text"
-                value={form.category}
-                onChange={(event) =>
-                  updateField(
-                    'category',
-                    event.target.value,
-                  )
-                }
-                placeholder="Apps Educacionais"
-                required
-              />
-            </label>
-
-            <label>
-              <span>
-                Label
-              </span>
-
-              <input
-                type="text"
-                value={form.label}
-                onChange={(event) =>
-                  updateField(
-                    'label',
-                    event.target.value,
-                  )
-                }
-                placeholder="APP EDUCACIONAL"
-              />
-            </label>
-
-          </div>
-
-          <label className="admin-form-full">
-            <span>
-              Descrição *
-            </span>
-
-            <textarea
-              value={form.description}
-              onChange={(event) =>
-                updateField(
-                  'description',
-                  event.target.value,
-                )
-              }
-              rows="5"
-              required
-            />
-          </label>
-
-          <label className="admin-form-full">
-            <span>
-              Tecnologias
-            </span>
-
-            <input
-              type="text"
-              value={form.technologies}
-              onChange={(event) =>
-                updateField(
-                  'technologies',
-                  event.target.value,
-                )
-              }
-              placeholder="React, TypeScript, Supabase"
-            />
-
-            <small>
-              Separe por vírgulas.
-            </small>
-          </label>
-
-          {technologiesPreview.length > 0 && (
-            <div className="admin-form-tech-preview">
-              {technologiesPreview.map(
-                (technology) => (
-                  <span key={technology}>
-                    {technology}
-                  </span>
-                ),
-              )}
-            </div>
-          )}
-
-          <div className="admin-form-grid">
-
-            <label>
-              <span>
-                GitHub
-              </span>
-
-              <input
-                type="url"
-                value={form.github_url}
-                onChange={(event) =>
-                  updateField(
-                    'github_url',
-                    event.target.value,
-                  )
-                }
-                placeholder="https://github.com/..."
-              />
-            </label>
-
-            <label>
-              <span>
-                Projeto publicado
-              </span>
-
-              <input
-                type="url"
-                value={form.demo_url}
-                onChange={(event) =>
-                  updateField(
-                    'demo_url',
-                    event.target.value,
-                  )
-                }
-                placeholder="https://..."
-              />
-            </label>
-
-          </div>
-
-          <div className="admin-form-grid">
-
-            <label>
-              <span>
-                Ordem
-              </span>
-
-              <input
-                type="number"
-                min="1"
-                value={form.display_order}
-                onChange={(event) =>
-                  updateField(
-                    'display_order',
-                    event.target.value,
-                  )
-                }
-              />
-            </label>
-
-            <label className="admin-checkbox-label">
-
-              <input
-                type="checkbox"
-                checked={form.featured}
-                onChange={(event) =>
-                  updateField(
-                    'featured',
-                    event.target.checked,
-                  )
-                }
-              />
-
-              <div>
-                <strong>
-                  Projeto em destaque
-                </strong>
-
-                <small>
-                  Marque para priorizar
-                  este projeto.
-                </small>
-              </div>
-
-            </label>
-
-          </div>
-
-          <div className="admin-image-field">
-
-            <div>
-              <span className="admin-field-label">
-                Imagem
-              </span>
-
-              <p>
-                WebP, PNG ou JPEG.
-                Máximo de 5 MB.
-              </p>
-
-              <input
-                type="file"
-                accept="
-                  image/webp,
-                  image/png,
-                  image/jpeg
-                "
-                onChange={
-                  handleImageChange
-                }
-              />
-            </div>
-
-            {previewUrl && (
-              <div className="admin-image-preview">
-
-                <img
-                  src={previewUrl}
-                  alt="Preview do projeto"
-                />
-
-              </div>
-            )}
-
-          </div>
-
-          {error && (
-            <div className="admin-alert admin-alert--error">
+            <div
+              className="alert alert-danger mb-0"
+              role="alert"
+            >
               {error}
             </div>
-          )}
 
-          {success && (
-            <div className="admin-alert admin-alert--success">
+          </div>
+        )}
+
+        {/* SUCESSO */}
+        {success && (
+          <div className="col-12">
+
+            <div
+              className="alert alert-success mb-0"
+              role="alert"
+            >
               {success}
             </div>
-          )}
 
-          <div className="admin-form-actions">
+          </div>
+        )}
+
+        {/* BOTÕES */}
+        <div className="col-12">
+
+          <hr className="border-secondary my-2" />
+
+          <div className="d-flex flex-column flex-sm-row justify-content-end gap-2">
 
             <button
               type="button"
-              className="button button-secondary"
+              className="btn btn-outline-secondary btn-lg"
               onClick={onCancel}
               disabled={saving}
             >
@@ -712,7 +910,7 @@ export default function ProjectForm({
 
             <button
               type="submit"
-              className="button button-primary"
+              className="btn btn-success btn-lg"
               disabled={saving}
             >
               {saving
@@ -724,10 +922,11 @@ export default function ProjectForm({
 
           </div>
 
-        </form>
+        </div>
 
-      </section>
+      </form>
 
-    </main>
-  )
+    </div>
+  </main>
+)
 }

@@ -44,14 +44,6 @@ export default function Dashboard({
     loadProjects()
   }, [])
 
-  /*
-    Salva a ordem atual dos projetos.
-
-    Como temos poucos projetos,
-    atualizar um por um mantém
-    a implementação simples
-    e sem dependências extras.
-  */
   async function saveOrder(nextProjects) {
     const orderedProjects =
       nextProjects.map(
@@ -71,10 +63,7 @@ export default function Dashboard({
                 display_order:
                   project.display_order,
               })
-              .eq(
-                'id',
-                project.id,
-              ),
+              .eq('id', project.id),
         ),
       )
 
@@ -107,8 +96,7 @@ export default function Dashboard({
     setOrdering(true)
     setError('')
 
-    const reordered =
-      [...projects]
+    const reordered = [...projects]
 
     ;[
       reordered[currentIndex],
@@ -142,21 +130,11 @@ export default function Dashboard({
         `Deseja realmente excluir "${project.title}"?`,
       )
 
-    if (!confirmed) {
-      return
-    }
+    if (!confirmed) return
 
     setDeletingId(project.id)
     setError('')
 
-    /*
-      Primeiro excluímos o registro.
-
-      Se a remoção da imagem falhar depois,
-      teremos apenas um arquivo órfão no
-      Storage, o que é melhor do que
-      apagar a imagem e falhar no banco.
-    */
     const { error: deleteError } =
       await supabase
         .from('projects')
@@ -174,11 +152,6 @@ export default function Dashboard({
       return
     }
 
-    /*
-      Remove a imagem apenas se ela
-      tiver sido enviada pelo admin
-      e possuir image_path.
-    */
     if (project.image_path) {
       const { error: storageError } =
         await supabase.storage
@@ -202,13 +175,7 @@ export default function Dashboard({
       )
 
     try {
-      /*
-        Aproveitamos para normalizar
-        a ordem após excluir.
-      */
-      if (
-        remainingProjects.length > 0
-      ) {
+      if (remainingProjects.length > 0) {
         await saveOrder(
           remainingProjects,
         )
@@ -216,9 +183,7 @@ export default function Dashboard({
         setProjects([])
       }
     } catch (orderError) {
-      console.error(
-        orderError,
-      )
+      console.error(orderError)
 
       await loadProjects()
     }
@@ -227,259 +192,309 @@ export default function Dashboard({
   }
 
   return (
-    <main className="admin-dashboard">
+    <main
+      className="min-vh-100 bg-dark text-light"
+      data-bs-theme="dark"
+    >
+      <nav className="navbar navbar-expand border-bottom border-secondary bg-black">
 
-      <header className="admin-header">
-
-        <strong>
-          JL.ADMIN
-        </strong>
-
-        <div className="admin-header-actions">
+        <div className="container py-2">
 
           <a
-            href="/"
-            target="_blank"
-            rel="noreferrer"
+            href="/admin"
+            className="navbar-brand text-light fw-bold"
           >
-            Ver portfólio ↗
+            JL.ADMIN
           </a>
 
-          <button
-            type="button"
-            onClick={onLogout}
-          >
-            Sair
-          </button>
+          <div className="d-flex align-items-center gap-2">
+
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline-secondary"
+            >
+              Portfólio ↗
+            </a>
+
+            <button
+              type="button"
+              className="btn btn-outline-danger"
+              onClick={onLogout}
+            >
+              Sair
+            </button>
+
+          </div>
 
         </div>
 
-      </header>
+      </nav>
 
-      <section className="admin-dashboard-content">
+      <div className="container py-5">
 
-        <div className="admin-page-heading">
+        <div className="row align-items-end g-4 mb-5">
 
-          <div>
+          <div className="col">
 
-            <p className="eyebrow">
+            <span className="badge text-bg-success mb-3">
               PAINEL ADMINISTRATIVO
-            </p>
+            </span>
 
-            <h1>
+            <h1 className="display-4 fw-bold mb-2">
               Projetos
             </h1>
 
-            <p>
-              Cadastre, edite, exclua
-              e organize os projetos
-              exibidos no portfólio.
+            <p className="text-secondary mb-0">
+              Cadastre, edite, exclua e organize os
+              projetos exibidos no portfólio.
             </p>
 
           </div>
 
-          <button
-            className="button button-primary"
-            type="button"
-            onClick={onNewProject}
-          >
-            + Novo projeto
-          </button>
+          <div className="col-12 col-md-auto">
+
+            <button
+              type="button"
+              className="btn btn-success btn-lg w-100"
+              onClick={onNewProject}
+            >
+              + Novo projeto
+            </button>
+
+          </div>
 
         </div>
 
         {error && (
-          <div className="admin-alert admin-alert--error">
+          <div
+            className="alert alert-danger"
+            role="alert"
+          >
             {error}
           </div>
         )}
 
         {loading ? (
 
-          <div className="admin-loading-box">
-            Carregando projetos...
+          <div className="text-center py-5">
+
+            <div
+              className="spinner-border text-success"
+              role="status"
+            >
+              <span className="visually-hidden">
+                Carregando...
+              </span>
+            </div>
+
+            <p className="text-secondary mt-3">
+              Carregando projetos...
+            </p>
+
           </div>
 
         ) : projects.length === 0 ? (
 
-          <div className="admin-empty">
+          <div className="card bg-black border-secondary">
 
-            <strong>
-              Nenhum projeto cadastrado.
-            </strong>
+            <div className="card-body text-center py-5">
 
-            <p>
-              Cadastre seu primeiro projeto.
-            </p>
+              <h5>
+                Nenhum projeto cadastrado.
+              </h5>
+
+              <p className="text-secondary mb-4">
+                Cadastre seu primeiro projeto.
+              </p>
+
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={onNewProject}
+              >
+                + Novo projeto
+              </button>
+
+            </div>
 
           </div>
 
         ) : (
 
-          <div className="admin-project-list">
+          <div className="vstack gap-3">
 
             {projects.map(
               (project, index) => (
 
                 <article
-                  className="admin-project-card"
+                  className="card bg-black border-secondary"
                   key={project.id}
                 >
 
-                  <div className="admin-project-preview">
+                  <div className="card-body">
 
-                    {project.image_url ? (
+                    <div className="row g-4 align-items-center">
 
-                      <img
-                        src={project.image_url}
-                        alt={`Preview de ${project.title}`}
-                      />
+                      <div className="col-12 col-md-3 col-lg-2">
 
-                    ) : (
+                        {project.image_url ? (
 
-                      <span>
-                        {project.title
-                          .slice(0, 2)
-                          .toUpperCase()}
-                      </span>
+                          <img
+                            src={project.image_url}
+                            alt={`Preview de ${project.title}`}
+                            className="img-fluid rounded border border-secondary w-100"
+                            style={{
+                              aspectRatio: '16 / 9',
+                              objectFit: 'cover',
+                            }}
+                          />
 
-                    )}
+                        ) : (
 
-                  </div>
+                          <div
+                            className="ratio ratio-16x9 border border-secondary rounded bg-dark"
+                          >
+                            <div className="d-flex align-items-center justify-content-center text-success fw-bold">
+                              {project.title
+                                .slice(0, 2)
+                                .toUpperCase()}
+                            </div>
+                          </div>
 
-                  <div className="admin-project-info">
-
-                    <div className="admin-project-meta">
-
-                      <span>
-                        {String(
-                          index + 1,
-                        ).padStart(
-                          2,
-                          '0',
-                        )}
-                      </span>
-
-                      <span>
-                        {project.label ||
-                          project.category}
-                      </span>
-
-                    </div>
-
-                    <h2>
-                      {project.title}
-                    </h2>
-
-                    <p>
-                      {project.description}
-                    </p>
-
-                    {Array.isArray(
-                      project.technologies,
-                    ) && (
-                      <div className="admin-project-techs">
-
-                        {project.technologies.map(
-                          (technology) => (
-
-                            <span
-                              key={technology}
-                            >
-                              {technology}
-                            </span>
-
-                          ),
                         )}
 
                       </div>
-                    )}
 
-                  </div>
+                      <div className="col">
 
-                  <div className="admin-project-actions">
+                        <div className="d-flex gap-2 flex-wrap mb-2">
 
-                    <div className="admin-order-buttons">
+                          <span className="badge text-bg-success">
+                            {String(
+                              index + 1,
+                            ).padStart(2, '0')}
+                          </span>
 
-                      <button
-                        type="button"
-                        disabled={
-                          index === 0 ||
-                          ordering
-                        }
-                        onClick={() =>
-                          moveProject(
-                            index,
-                            -1,
-                          )
-                        }
-                        title="Mover para cima"
-                        aria-label={`Mover ${project.title} para cima`}
-                      >
-                        ↑
-                      </button>
+                          <span className="badge text-bg-secondary">
+                            {project.label ||
+                              project.category}
+                          </span>
 
-                      <button
-                        type="button"
-                        disabled={
-                          index ===
-                            projects.length -
-                              1 ||
-                          ordering
-                        }
-                        onClick={() =>
-                          moveProject(
-                            index,
-                            1,
-                          )
-                        }
-                        title="Mover para baixo"
-                        aria-label={`Mover ${project.title} para baixo`}
-                      >
-                        ↓
-                      </button>
+                        </div>
+
+                        <h2 className="h4 mb-2">
+                          {project.title}
+                        </h2>
+
+                        <p className="text-secondary mb-3">
+                          {project.description}
+                        </p>
+
+                        <div className="d-flex flex-wrap gap-2">
+
+                          {project.technologies?.map(
+                            (technology) => (
+                              <span
+                                key={technology}
+                                className="badge border border-secondary text-secondary fw-normal"
+                              >
+                                {technology}
+                              </span>
+                            ),
+                          )}
+
+                        </div>
+
+                      </div>
+
+                      <div className="col-12 col-lg-auto">
+
+                        <div className="d-flex flex-wrap gap-2 justify-content-lg-end">
+
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            disabled={
+                              index === 0 ||
+                              ordering
+                            }
+                            onClick={() =>
+                              moveProject(
+                                index,
+                                -1,
+                              )
+                            }
+                          >
+                            ↑
+                          </button>
+
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            disabled={
+                              index ===
+                                projects.length - 1 ||
+                              ordering
+                            }
+                            onClick={() =>
+                              moveProject(
+                                index,
+                                1,
+                              )
+                            }
+                          >
+                            ↓
+                          </button>
+
+                          {project.demo_url && (
+                            <a
+                              href={project.demo_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="btn btn-outline-light"
+                            >
+                              Abrir ↗
+                            </a>
+                          )}
+
+                          <button
+                            type="button"
+                            className="btn btn-warning"
+                            onClick={() =>
+                              onEditProject(
+                                project,
+                              )
+                            }
+                          >
+                            Editar
+                          </button>
+
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger"
+                            disabled={
+                              deletingId ===
+                              project.id
+                            }
+                            onClick={() =>
+                              handleDelete(
+                                project,
+                              )
+                            }
+                          >
+                            {deletingId ===
+                            project.id
+                              ? 'Excluindo...'
+                              : 'Excluir'}
+                          </button>
+
+                        </div>
+
+                      </div>
 
                     </div>
-
-                    {project.demo_url && (
-                      <a
-                        href={project.demo_url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Abrir ↗
-                      </a>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onEditProject(
-                          project,
-                        )
-                      }
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      className="admin-delete-button"
-                      type="button"
-                      disabled={
-                        deletingId ===
-                        project.id
-                      }
-                      onClick={() =>
-                        handleDelete(
-                          project,
-                        )
-                      }
-                    >
-                      {deletingId ===
-                      project.id
-                        ? 'Excluindo...'
-                        : 'Excluir'}
-                    </button>
 
                   </div>
 
@@ -492,8 +507,7 @@ export default function Dashboard({
 
         )}
 
-      </section>
-
+      </div>
     </main>
   )
 }
