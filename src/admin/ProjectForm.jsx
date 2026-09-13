@@ -7,6 +7,7 @@ const TECHNOLOGY_OPTIONS = [
   'JavaScript',
   'TypeScript',
   'Node.js',
+  'Vue.js',
 
   'HTML',
   'CSS',

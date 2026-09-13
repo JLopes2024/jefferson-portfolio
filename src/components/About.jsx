@@ -8,7 +8,7 @@ export default function About() {
         <h2 className="about-title">
           Técnica
           <br />
-          com
+         <span>com</span> 
           <br />
           intenção.
         </h2>
